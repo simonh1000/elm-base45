@@ -1,7 +1,4 @@
-module Base45 exposing
-    ( decode, encode
-    , decodeString, encodeString
-    )
+module Base45 exposing (decode, encode)
 
 {-| Base45 Data Encoding
 
@@ -22,16 +19,26 @@ import Dict exposing (Dict)
 
 
 {-| Converts a Base45 string into Bytes
+
+Fails if the string is not of length 3x or 3x + 2
+
 -}
 decode : String -> Result String Bytes
 decode =
-    decodeString
+    decCommon
         >> Result.map (List.map Encode.unsignedInt8 >> Encode.sequence >> Encode.encode)
 
 
-decodeString : String -> Result String (List Int)
+decodeString : String -> Result String String
 decodeString =
-    String.toList >> List.map String.fromChar >> decode_
+    decCommon
+        >> Result.map (List.map Char.fromCode >> String.fromList)
+
+
+decCommon =
+    String.toList
+        >> List.map String.fromChar
+        >> decode_
 
 
 {-| Each 3 characters corresponds to 2 bytes.
@@ -47,7 +54,6 @@ decode_ s =
             dec2 a b
 
         [ _ ] ->
-            -- TODO is this really invalid
             Err "Bad shape: single character encountered at end"
 
         [] ->
@@ -225,4 +231,4 @@ revLookupTable =
 
 lookupList : List String
 lookupList =
-    [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "", "$", "%", "*", "+", "-", ".", "/", ":" ]
+    [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", " ", "$", "%", "*", "+", "-", ".", "/", ":" ]
