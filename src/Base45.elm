@@ -35,6 +35,7 @@ decodeString =
         >> Result.map (List.map Char.fromCode >> String.fromList)
 
 
+decCommon : String -> Result String (List Int)
 decCommon =
     String.toList
         >> List.map String.fromChar
@@ -48,7 +49,10 @@ decode_ : List String -> Result String (List Int)
 decode_ s =
     case s of
         a :: b :: c :: tl ->
-            Result.map2 (++) (dec3 a b c) (decode_ tl)
+            -- Convert first 3 characters before attempting to go further
+            -- this avoids a stack overflow on very large strings
+            dec3 a b c
+                |> Result.andThen (\hd -> Result.map (\tl_ -> hd ++ tl_) (decode_ tl))
 
         [ a, b ] ->
             dec2 a b

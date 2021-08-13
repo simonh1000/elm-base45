@@ -64,22 +64,14 @@ stringToBytes s =
     Bytes.encode <| Bytes.string s
 
 
+testBadString =
+    describe "bad strings"
+        [ test "stop on first bad characters" <|
+            \_ ->
+                decode long
+                    |> Expect.equal (Err "Could not reverse lookup 'd'")
+        ]
 
---{-| Used during development based on the examples in the spec
----}
---stringTests : Test
---stringTests =
---    describe "tests from spec"
---        [ test "encode 'Hello!!'" <|
---            \_ ->
---                encodeString "Hello!!"
---                    |> Expect.equal hello_
---        , test "decode 'Hello!!' 1" <|
---            \_ ->
---                decCommon hello_
---                    |> Expect.equal (Ok [ 72, 101, 108, 108, 111, 33, 33 ])
---        , test "decode 'Hello!!' 2" <|
---            \_ ->
---                decodeString hello_
---                    |> Expect.equal (Ok "Hello!!")
---        ]
+
+long =
+    "AAAAAAAAAdata:image/png;base64,iVBORw0KGgoAAAANSUhEUg"
