@@ -51,24 +51,7 @@ decode_ s =
         a :: b :: c :: tl ->
             -- Convert first 3 characters before attempting to go further
             -- this avoids a stack overflow on very large strings
-            Result.map2
-                (\hd tl_ ->
-                    let
-                        _ =
-                            [ 104, 194, 141, 163, 98, 43 ]
-                                |> List.map
-                                    (\n ->
-                                        if List.member n hd then
-                                            Debug.log (String.fromInt n) ( a ++ b ++ c, hd )
-
-                                        else
-                                            ( a ++ b ++ c, hd )
-                                    )
-                    in
-                    hd ++ tl_
-                )
-                (dec3 a b c)
-                (decode_ tl)
+            Result.map2 (++) (dec3 a b c) (decode_ tl)
 
         [ a, b ] ->
             dec2 a b
@@ -81,36 +64,37 @@ decode_ s =
 
 
 
---fn hd tl =
 --
 
 
 dec3 : String -> String -> String -> Result String (List Int)
 dec3 a b c =
-    Result.map3 (\a_ b_ c_ -> modRem_ <| a_ + b_ * base45 + c_ * base45Squared)
-        (revLookup a)
-        (revLookup b)
-        (revLookup c)
+    let
+        handler a_ b_ c_ =
+            let
+                ( x, y ) =
+                    modRem 256 <| a_ + b_ * base45 + c_ * base45Squared
+            in
+            [ x, y ]
+    in
+    Result.map3 handler (revLookup a) (revLookup b) (revLookup c)
 
 
 dec2 : String -> String -> Result String (List Int)
 dec2 a b =
-    Result.map2 (\a_ b_ -> modRem_ <| a_ + b_ * base45)
-        (revLookup a)
-        (revLookup b)
-
-
-modRem_ : Int -> List Int
-modRem_ x =
     let
-        ( a, b ) =
-            modRem 256 x
-    in
-    if a == 0 then
-        [ b ]
+        handler a_ b_ =
+            let
+                ( x, y ) =
+                    modRem 256 <| a_ + b_ * base45
+            in
+            if x == 0 then
+                [ y ]
 
-    else
-        [ a, b ]
+            else
+                [ x, y ]
+    in
+    Result.map2 handler (revLookup a) (revLookup b)
 
 
 

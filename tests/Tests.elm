@@ -81,16 +81,14 @@ long =
 
 binaryTests =
     describe "binary tests"
-        [ --test "binary length" <|
-          --    \_ ->
-          --        binaryData
-          --            |> String.dropLeft 4
-          --            |> decode
-          --            |> Result.map Bytes.width
-          --            |> Expect.equal (Ok 345)
-          --
-          --,
-          test "binary content" <|
+        [ test "binary length" <|
+            \_ ->
+                binaryData
+                    |> String.dropLeft 4
+                    |> decode
+                    |> Result.map Bytes.width
+                    |> Expect.equal (Ok 345)
+        , test "binary content" <|
             \_ ->
                 binaryData
                     |> String.dropLeft 4
