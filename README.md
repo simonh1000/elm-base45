@@ -11,3 +11,9 @@ Base45.encode (Bytes.encode <| Bytes.string "ietf!")
 Base45.decode "QED8WEX0"
 -- returns bytes that correspond to string "ietf!"
 ```
+
+
+
+### JS example
+
+node tests/example.js

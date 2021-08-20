@@ -51,8 +51,7 @@ decode_ s =
         a :: b :: c :: tl ->
             -- Convert first 3 characters before attempting to go further
             -- this avoids a stack overflow on very large strings
-            dec3 a b c
-                |> Result.andThen (\hd -> Result.map (\tl_ -> hd ++ tl_) (decode_ tl))
+            Result.map2 (++) (dec3 a b c) (decode_ tl)
 
         [ a, b ] ->
             dec2 a b
