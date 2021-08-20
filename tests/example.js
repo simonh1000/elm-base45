@@ -10,4 +10,10 @@ const payload = testCode.slice(4);
 // returns buffer
 const decoded = base45.decode(payload);
 console.log(decoded.length);
-console.log(decoded);
+// console.log(decoded);
+
+let lst = []
+for (const value of decoded.values()) {
+    lst = [...lst, value];
+}
+console.log(JSON.stringify(lst));

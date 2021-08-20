@@ -51,7 +51,24 @@ decode_ s =
         a :: b :: c :: tl ->
             -- Convert first 3 characters before attempting to go further
             -- this avoids a stack overflow on very large strings
-            Result.map2 (++) (dec3 a b c) (decode_ tl)
+            Result.map2
+                (\hd tl_ ->
+                    let
+                        _ =
+                            [ 104, 194, 141, 163, 98, 43 ]
+                                |> List.map
+                                    (\n ->
+                                        if List.member n hd then
+                                            Debug.log (String.fromInt n) ( a ++ b ++ c, hd )
+
+                                        else
+                                            ( a ++ b ++ c, hd )
+                                    )
+                    in
+                    hd ++ tl_
+                )
+                (dec3 a b c)
+                (decode_ tl)
 
         [ a, b ] ->
             dec2 a b
@@ -61,6 +78,11 @@ decode_ s =
 
         [] ->
             Ok []
+
+
+
+--fn hd tl =
+--
 
 
 dec3 : String -> String -> String -> Result String (List Int)
