@@ -3,7 +3,7 @@
     "name": "simonh1000/elm-base45",
     "summary": "Decoding and Encoding of Base45 (QR code) data",
     "license": "MIT",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "exposed-modules": [
         "Base45"
     ],
